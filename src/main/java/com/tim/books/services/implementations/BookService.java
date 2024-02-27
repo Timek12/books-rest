@@ -17,8 +17,14 @@ public class BookService implements IBookService {
     public BookService(final BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
+
     @Override
-    public Book create(final Book book) {
+    public boolean isBookExists(Book book) {
+        return bookRepository.existsById(book.getIsbn());
+    }
+
+    @Override
+    public Book save(final Book book) {
         final BookEntity bookEntity = bookToBookEntity(book);
         final BookEntity savedBookEntity = bookRepository.save(bookEntity);
         return bookEntityToBook(savedBookEntity);
