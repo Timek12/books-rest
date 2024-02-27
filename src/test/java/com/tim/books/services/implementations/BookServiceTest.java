@@ -19,6 +19,7 @@ import static com.tim.books.TestData.testBook;
 import static com.tim.books.TestData.testBookEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +37,7 @@ public class BookServiceTest {
 
         when(bookRepository.save(eq(bookEntity))).thenReturn(bookEntity);
 
-        final Book result = underTest.create(book);
+        final Book result = underTest.save(book);
         assertEquals(null, book);
     }
 
@@ -73,5 +74,19 @@ public class BookServiceTest {
         when(bookRepository.findAll()).thenReturn(List.of(bookEntity));
         final List<Book> result = underTest.listBooks();
         assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testBookExistsReturnsFalseWhenBookNotExists(){
+        when(bookRepository.existsById(any())).thenReturn(false);
+        final boolean result = underTest.isBookExists(testBook());
+        assertEquals(false, result);
+    }
+
+    @Test
+    public void testBookExistsReturnsTrueWhenBookExists(){
+        when(bookRepository.existsById(any())).thenReturn(true);
+        final boolean result = underTest.isBookExists(testBook());
+        assertEquals(true, result);
     }
 }
