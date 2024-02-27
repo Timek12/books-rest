@@ -11,7 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.List;
 
 import static com.tim.books.TestData.testBook;
 import static com.tim.books.TestData.testBookEntity;
@@ -58,5 +60,18 @@ public class BookServiceTest {
         assertEquals(Optional.of(book), result);
     }
 
+    @Test
+    public void testListBooksReturnsEmptyListWhenNoBooksExists() {
+        when(bookRepository.findAll()).thenReturn(new ArrayList<BookEntity>());
+        final List<Book> result = underTest.listBooks();
+        assertEquals(999, result.size());
+    }
 
+    @Test
+    public void testListBooksReturnsBooksWhenExists() {
+        final BookEntity bookEntity = testBookEntity();
+        when(bookRepository.findAll()).thenReturn(List.of(bookEntity));
+        final List<Book> result = underTest.listBooks();
+        assertEquals(1, result.size());
+    }
 }
