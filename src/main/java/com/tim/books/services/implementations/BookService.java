@@ -4,6 +4,8 @@ import com.tim.books.domain.Book;
 import com.tim.books.domain.BookEntity;
 import com.tim.books.repositories.BookRepository;
 import com.tim.books.services.interfaces.IBookService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BookService implements IBookService {
 
     private final BookRepository bookRepository;
@@ -40,6 +43,15 @@ public class BookService implements IBookService {
     public List<Book> listBooks() {
         final List<BookEntity> foundBooks = bookRepository.findAll();
         return foundBooks.stream().map(book -> bookEntityToBook(book)).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteBookById(String isbn) {
+        try {
+            bookRepository.deleteById(isbn);
+        } catch(final EmptyResultDataAccessException ex) {
+            log.debug("Attempted to delete non-existing book", ex);
+        }
     }
 
     private BookEntity bookToBookEntity(Book book) {
