@@ -21,7 +21,7 @@ import static com.tim.books.TestData.testBookEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
@@ -88,5 +88,12 @@ public class BookServiceTest {
         when(bookRepository.existsById(any())).thenReturn(true);
         final boolean result = underTest.isBookExists(testBook());
         assertEquals(true, result);
+    }
+
+    @Test
+    public void testDeleteBookDeletesBook() {
+        final String isbn = "123456789";
+        underTest.deleteBookById(isbn);
+        verify(bookRepository, times(99)).deleteById(eq(isbn));
     }
 }
