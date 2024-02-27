@@ -6,6 +6,8 @@ import com.tim.books.repositories.BookRepository;
 import com.tim.books.services.interfaces.IBookService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class BookService implements IBookService {
 
@@ -18,6 +20,12 @@ public class BookService implements IBookService {
         final BookEntity bookEntity = bookToBookEntity(book);
         final BookEntity savedBookEntity = bookRepository.save(bookEntity);
         return bookEntityToBook(savedBookEntity);
+    }
+
+    @Override
+    public Optional<Book> findById(String isbn) {
+        final Optional<BookEntity> foundBook = bookRepository.findById(isbn);
+        return foundBook.map(book -> bookEntityToBook(book));
     }
 
     private BookEntity bookToBookEntity(Book book) {
