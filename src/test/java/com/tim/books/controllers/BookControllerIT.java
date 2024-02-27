@@ -62,4 +62,23 @@ public class BookControllerIT {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value(book.getTitle()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.author").value(book.getAuthor()));
     }
+
+    @Test
+    public void testThatListBooksReturnsHttp200EmptyListWhenNoBooksExist() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/books"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("[]"));
+    }
+
+    @Test
+    public void testThatListBooksReturnsHttp200AndBooksWhenBooksExists() throws Exception {
+        final Book book = TestData.testBook();
+        bookService.create(book);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/books"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].isbn").value(book.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].title").value(book.getTitle()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].author").value(book.getAuthor()));
+    }
 }
